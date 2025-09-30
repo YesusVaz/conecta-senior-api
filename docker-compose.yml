@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Banco de dados PostgreSQL
+  postgres:
+    image: postgres:15
+    container_name: conecta-senior-db
+    environment:
+      POSTGRES_DB: conectasenior
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - conecta-network
+    restart: unless-stopped
+
+  # API Spring Boot
+  api:
+    build: .
+    container_name: conecta-senior-api
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/conectasenior
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: ${DB_PASSWORD:-postgres123}
+      # MELHORIA DE SEGURANÇA: Forçar definição de JWT_SECRET no arquivo .env
+      JWT_SECRET: ${JWT_SECRET:?É obrigatório definir uma JWT_SECRET no arquivo .env}
+      JWT_EXPIRATION: 86400000
+      # MELHORIA DE SEGURANÇA: Configurar CORS para produção
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-https://app.conectasenior.com.br}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - conecta-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx como proxy reverso
+  nginx:
+    image: nginx:alpine
+    container_name: conecta-senior-nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+    networks:
+      - conecta-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  conecta-network:
+    driver: bridge
