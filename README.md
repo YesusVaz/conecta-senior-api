@@ -12,6 +12,33 @@ A Conecta Senior API é uma aplicação Spring Boot que oferece funcionalidades 
 - Autenticação JWT
 - Documentação automática com Swagger
 
+## 🗄️ Banco de Dados
+
+### Configuração Atual
+O projeto está **atualmente configurado para usar H2 Database** (banco em memória) para facilitar a execução e demonstração, já que não requer instalação de software adicional.
+
+### Suporte ao PostgreSQL
+O projeto foi **desenvolvido e testado com PostgreSQL** como banco principal para produção. A estrutura suporta completamente PostgreSQL com:
+- ✅ Configurações específicas para PostgreSQL
+- ✅ Dependências PostgreSQL incluídas no projeto
+- ✅ Scripts de configuração para ambiente produtivo
+- ✅ Perfis separados (dev/prod para PostgreSQL, test para H2)
+
+### Por que H2 está sendo usado?
+- **Conveniência**: Não requer instalação de PostgreSQL
+- **Testes**: Ideal para demonstrações e desenvolvimento rápido
+- **Compatibilidade**: Funciona em qualquer máquina sem configuração adicional
+- **Dados temporários**: Perfeito para testes acadêmicos e prototipagem
+
+### Como alternar para PostgreSQL
+Para usar PostgreSQL em produção, simplesmente altere o perfil ativo:
+```properties
+# Em application.properties
+spring.profiles.active=dev  # ou prod
+```
+
+E configure o PostgreSQL conforme as instruções abaixo.
+
 ## 🛠️ Tecnologias Utilizadas
 
 - **Java 21+**
@@ -219,53 +246,5 @@ docker run -p 8080:8080 \
   -e JWT_SECRET=chave_segura \
   conecta-senior-api
 ```
-
-## 🚀 Deploy em Produção
-
-Para deploy completo em produção, consulte o arquivo `DEPLOY-GUIDE.md` que contém:
-- Configuração de servidor
-- Setup com Docker Compose
-- Configuração de SSL/HTTPS
-- Monitoramento e logs
-- Backup automático
-- Troubleshooting
-
-## 🤝 Contribuindo
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
-## 📞 Suporte
-
-- **Documentação**: http://localhost:8080/swagger-ui.html
-- **Issues**: [GitHub Issues](link-para-issues)
-- **Wiki**: [Documentação Wiki](link-para-wiki)
-
----
-
-## ✅ Checklist de Funcionalidades
-
-- [x] Controllers REST completos
-- [x] Services com lógica de negócio
-- [x] Models/Entities JPA
-- [x] Query params e path variables
-- [x] Spring Data JPA
-- [x] Padrão DTO implementado
-- [x] Validação com Bean Validation
-- [x] Tratamento de exceções global
-- [x] Autenticação JWT
-- [x] Documentação Swagger/OpenAPI
-- [x] Configuração para PostgreSQL
-- [x] Profiles (dev/prod)
-- [x] Docker e Docker Compose
-- [x] Testes unitários
-- [x] Deploy automatizado
 
 **🎉 Conecta Senior API - Cuidando com tecnologia!**

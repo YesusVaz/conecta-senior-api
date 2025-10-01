@@ -41,7 +41,6 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         try {
-            // JJWT 0.12+: usando parseSignedClaims e verifyWith
             return Jwts.parser()
                     .verifyWith(getSigningKey())
                     .build()
@@ -78,7 +77,6 @@ public class JwtService {
                 .subject(subject)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                // JJWT 0.12+: usando signWith com algoritmo explícito
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
@@ -95,6 +93,6 @@ public class JwtService {
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes); // precisa ter >= 256 bits para HS256
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
